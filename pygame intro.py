@@ -39,6 +39,9 @@ while True:
             pygame.quit()
             exit()
 #blit = block image transfer --> put on surface on another surface --> (200,100) means we want our display surface 200 from left 100 from top
+ # Fill the screen with a background color or image
+    screen.fill((0, 0, 0))  # Fill the screen with black color, alternatively you can blit a background image
+    
     screen.blit(ANANA_surface,(0,0))
     screen.blit(cursedcat_surface,(600,200))
     screen.blit(text_surface,(300,50))
