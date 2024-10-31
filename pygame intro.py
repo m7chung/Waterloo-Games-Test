@@ -10,8 +10,10 @@ import pygame
 from sys import exit
 
 pygame.init()
+#gathers the users screen size
+infoObject = pygame.display.Info()
 #establishes the size of the game (display screen)
-screen=pygame.display.set_mode((800,400))
+screen=pygame.display.set_mode((infoObject.current_w, infoObject.current_h), pygame.FULLSCREEN)
 pygame.display.set_caption('The Waterloo Games')
 clock = pygame.time.Clock()
 
