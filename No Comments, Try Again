@@ -1,0 +1,139 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Fri Nov  1 14:06:25 2024
+
+@author: camer
+"""
+
+import pygame
+# need to import so exit is supported --> doesn't run error
+from sys import exit
+
+# STARTING VARIABLES ---------------------------------------------------------------------
+pygame.init()
+# gathers the users screen size
+infoObject = pygame.display.Info()
+# establishes the size of the game (display screen)
+screen = pygame.display.set_mode((1000, 800))
+pygame.display.set_caption('The Waterloo Games')
+clock = pygame.time.Clock()
+# Font(font type,font size)
+test_font = pygame.font.Font('cmtt10.ttf', 50)
+
+# SURFACES ------------------------------------------------------------------------------
+# sizes are always (width,height)
+ANANA_surf = pygame.image.load('ANANA.jpg').convert_alpha()
+cursedcat_surf = pygame.image.load('cursed cat.JPG').convert_alpha()
+score_surf = test_font.render('Baddies', False, (0, 255, 0))
+score_rect = score_surf.get_rect(center=(500, 50))
+
+bibble_surf = pygame.image.load('bibble.png').convert_alpha()
+bibble_rect = bibble_surf.get_rect(bottomright=(2000, 750))
+
+tikka_surf = pygame.image.load('tikka.JPG').convert_alpha()
+tikka_rect = tikka_surf.get_rect(bottomright=(200, 400))
+
+you_lost_surf = pygame.image.load('bibble_got_you.jpg').convert_alpha()
+you_lost_rect = you_lost_surf.get_rect(center=(500, 400))
+
+# Initialize tikka_gravity outside functions
+tikka_gravity = 0
+
+# BUTTONS --------------------------------------------------------------------------------
+play_button_surf = test_font.render('Play', True, (255, 255, 255))
+play_button_rect = play_button_surf.get_rect(center=(500, 300))
+
+exit_button_surf = test_font.render('Exit', True, (255, 255, 255))
+exit_button_rect = exit_button_surf.get_rect(center=(500, 400))
+
+try_again_button_surf = test_font.render('Try Again', True, (255, 255, 255))
+try_again_button_rect = try_again_button_surf.get_rect(center=(500, 300))
+
+# MENU LOOP --------------------------------------------------------------------------------
+def menu():
+    while True:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                exit()
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if play_button_rect.collidepoint(event.pos):
+                    return  # Start the game
+                if exit_button_rect.collidepoint(event.pos):
+                    pygame.quit()
+                    exit()
+
+        screen.fill((0, 0, 0))
+        screen.blit(play_button_surf, play_button_rect)
+        screen.blit(exit_button_surf, exit_button_rect)
+        pygame.display.update()
+        clock.tick(60)
+
+# YOU LOST SCREEN ------------------------------------------------------------------------
+def you_lost():
+    while True:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                exit()
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if try_again_button_rect.collidepoint(event.pos):
+                    return  # Restart the game
+                if exit_button_rect.collidepoint(event.pos):
+                    pygame.quit()
+                    exit()
+
+        screen.fill((0, 0, 0))
+        screen.blit(you_lost_surf, you_lost_rect)
+        screen.blit(try_again_button_surf, try_again_button_rect)
+        screen.blit(exit_button_surf, exit_button_rect)
+        pygame.display.update()
+        clock.tick(60)
+
+# GAME LOOP --------------------------------------------------------------------------------
+def game():
+    global tikka_gravity  # Ensure tikka_gravity is accessible here
+    while True:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                exit()
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_SPACE and tikka_rect.bottom >= 750:
+                    tikka_gravity = -15
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if tikka_rect.collidepoint(event.pos) and tikka_rect.bottom >= 750:
+                    tikka_gravity = -15
+
+        screen.fill((0, 0, 0))
+        screen.blit(ANANA_surf, (0, 0))
+        screen.blit(cursedcat_surf, (600, 200))
+        pygame.draw.rect(screen, "Pink", score_rect, 10)
+        pygame.draw.rect(screen, "Pink", score_rect)
+        screen.blit(score_surf, score_rect)
+        pygame.draw.line(screen, "Silver", (0, 0), pygame.mouse.get_pos(), 10)
+        pygame.draw.ellipse(screen, 'Turquoise', pygame.Rect(50, 400, 100, 200))
+
+        bibble_rect.x -= 12
+        if bibble_rect.right <= 0:
+            bibble_rect.left = 1000
+
+        screen.blit(bibble_surf, (bibble_rect))
+
+        tikka_gravity += 0.4
+        tikka_rect.y += tikka_gravity
+        if tikka_rect.bottom >= 750:
+            tikka_rect.bottom = 750
+
+        if tikka_rect.top <= 50:
+            tikka_rect.top = 50
+        screen.blit(tikka_surf, tikka_rect)
+
+        if bibble_rect.colliderect(tikka_rect):
+            you_lost()
+
+        pygame.display.update()
+        clock.tick(60)
+
+menu()
+game()
