@@ -2,7 +2,7 @@
 """
 Created on Wed Oct 30 17:45:29 2024
 
-@author: msmad
+@author: msmad, cvanderz
 """
 import pygame
 #need to import so exit is supported --> doesn't run error
@@ -38,6 +38,9 @@ tikka_surf = pygame.image.load('tikka.JPG').convert_alpha()
 #Rect(left,top,width,height) --> rectangle in same place as tikka
 tikka_rect = tikka_surf.get_rect(bottomright = (200,400))
 tikka_gravity = 0
+
+you_lost_surf = pygame.image.load('bibble_got_you.jpg').convert_alpha()
+you_lost_rect = you_lost_surf.get_rect(center=(500, 400))
 
 #bibble_rect = bibble_surf.get_rect(midtop = (bibble_x_pos,500))
 
@@ -99,9 +102,14 @@ while True:
 #COLLISION --------------------------------------------------
 
     if bibble_rect.colliderect(tikka_rect):
+       # pygame.quit()
+       # exit()
+        screen.blit(you_lost_surf, you_lost_rect)
+        pygame.display.update()
+        pygame.time.wait(2000)  # Wait for 2 seconds before closing
         pygame.quit()
         exit()
-    
+        
     
 
 
